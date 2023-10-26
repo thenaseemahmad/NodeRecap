@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { response } from 'express';
 import fs from 'fs';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -69,6 +69,28 @@ app.get("/apitest", function (req, res) {
     //callanNodeHttpbasadapi();
     callAnAxiosBasedApi();
 })
+
+app.get("/getweatherdetail",(req,res)=>{
+    getweatherdetail("New Delhi","apikeyhere");
+})
+
+//function to get weather of a given city using https://weatherstack.com/dashboard API
+
+async function getweatherdetail(cityname, apiaccesskey){
+    const params = {
+        access_key:apiaccesskey,
+        query:cityname
+    };
+    axios.get('http://api.weatherstack.com/current', {params})
+    .then(response=>{
+        const apiResponse = response.data; 
+        console.log(`Current temperature in ${apiResponse.location.name} is ${apiResponse.current.temperature}℃`);
+    })
+    .catch(error=>{
+        console.log(error);
+    });
+
+}
 
 app.post('/createfile', (req, res) => {
     //console.log(req.body)
