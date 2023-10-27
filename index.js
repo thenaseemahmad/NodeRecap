@@ -15,17 +15,6 @@ app.get('/',(req, res)=> {
     res.sendFile(__dirname+"/public/index.html");
 });
 
-app.post('/createfile',(req,res)=>{
-    //console.log(req.body)
-    fs.writeFile(req.body.FileName,req.body.FileText,(err)=>{
-        if(err){
-            console.log("internal error");
-        }
-        else{
-            res.sendStatus(201);
-        }
-    });    
-});
 
 app.listen(port, ()=> {
     console.log('Server is running on 3000');
