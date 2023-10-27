@@ -75,7 +75,6 @@ app.get("/getweatherdetail",(req,res)=>{
 })
 
 //function to get weather of a given city using https://weatherstack.com/dashboard API
-
 async function getweatherdetail(cityname, apiaccesskey){
     const params = {
         access_key:apiaccesskey,
