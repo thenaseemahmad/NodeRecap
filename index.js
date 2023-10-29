@@ -21,10 +21,9 @@ const port = 3000;
 //2. psql
 //3. psql -d my_pgdb <-- my_pgdb is a database here
 
-//postgreSql pool connection
 
 
-function pgselectQuery(selectQuery){
+function pgselectQuery(selectQuery, fn){
     const db = new pg.Client({
         user:'postgres',
         host:'localhost',
@@ -33,20 +32,51 @@ function pgselectQuery(selectQuery){
         port:5432,
     });
     db.connect();
-    db.query(selectQuery,(err, res)=>{
+    db.query(selectQuery,function(err, res){
         if(err){
             console.error("Error in query execution, ", err.stack);
+            fn(err.message);
         }
         else{
-            console.log(res.rows);
+            //console.log(res.rows);
+            fn(res.rows);
         }
-        db.end();
-    });    
+        db.end();         
+    });      
+}
+
+function pginsertintoQuery(insertQuery, callback){
+    const db = new pg.Client({
+        user:'postgres',
+        host:'localhost',
+        database:'my_pgdb',
+        password:'Mbappe@143',
+        port:5432,
+    });
+    db.connect();
+    db.query(insertQuery,function(err, res){
+        if(err){
+            console.error("Error in query execution, ", err.stack);
+            callback(err.message);
+        }
+        else{
+            //console.log(res.rows);
+            callback(res.message);
+        }
+        db.end();         
+    });
 }
 
 app.get('/',(req, res)=> {
     //res.sendFile(__dirname+"/public/index.html");
-    pgselectQuery('select * from public.my_first_postgres_table');   
+    // const rows = pgselectQuery('select * from public.my_first_postgres_table',function(returnVal){
+    //     console.log(returnVal);
+    // });
+
+    const insertedRows = pginsertintoQuery("INSERT INTO my_first_postgres_table	VALUES (4, 'Ahmad Kabeer', '24/Feb/1997');",function(res){
+        console.log(res);
+    })
+       
 });
 
 app.listen(port, ()=> {
