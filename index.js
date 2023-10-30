@@ -19,24 +19,15 @@ const User = new mongoose.model('users',userSchema);
 
 app.get('/',(req, res)=> {
     //res.sendFile(__dirname+"/public/index.html");
+    //Simplest method to save username and password of a given user
     const newUser = new User({
         username:'naseem@gmail.com',
         password:'yeterayemera'
     })
-    // newUser.save(function(err){
-    //     if(err){
-    //         console.log(err);
-    //     }
-    //     else{
-    //         res.send('User added successfully');
-    //     }
-    // })
     newUser.save().then(function(){
         console.log("user added successfully");
     })
 });
-
-
 
 app.listen(port, ()=> {
     console.log('Server is running on 3000');
