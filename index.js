@@ -6,7 +6,11 @@ import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
-import encrypt from 'mongoose-encryption';
+//mongoose-encryption is a encryption pack
+//import encrypt from 'mongoose-encryption';
+
+//Lets use hashing instead of encrytion md5 hashing algo
+import md5 from 'md5';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -18,8 +22,7 @@ mongoose.connect("mongodb+srv://"+process.env.MONGODB_USER+":"+process.env.MONGO
 
 const userSchema = new mongoose.Schema({username:String,password:String});
 
-const secret = 'Girlbhichahiyeaurboybhi';
-userSchema.plugin(encrypt,{secret:secret, encryptedFields: ['password']});
+//userSchema.plugin(encrypt,{secret:secret, encryptedFields: ['password']});
 const User = new mongoose.model('users',userSchema);
 
 // async function findUser(username,password){
@@ -34,7 +37,7 @@ app.get('/',(req, res)=> {
 app.post('/registeruser',(req,res)=>{
     const newUser = new User({
         username:req.body.username,
-        password:req.body.password
+        password:md5(req.body.password)
     });
     newUser.save().then(()=>console.log("User added successfully"));
     res.sendFile(__dirname+"/public/signin.html");
@@ -42,7 +45,7 @@ app.post('/registeruser',(req,res)=>{
 
 app.post('/usersignin', (req,res)=>{
     const givenusername = req.body.username;
-    const givenpassword = req.body.password;
+    const givenpassword = md5(req.body.password);
     User.findOne({username:givenusername}).then((founduser)=>{
         if(founduser){
             console.log("User authenticated successfully!");
