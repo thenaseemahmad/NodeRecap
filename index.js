@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import fs from 'fs';
 import { dirname } from 'path';
@@ -13,7 +14,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(morgan('combined'));
 const port = 3000;
 
-mongoose.connect("mongodb+srv://japsinnaseem:FyEIWWloif0nDvUG@cluster0.c9xlloe.mongodb.net/userDB?retryWrites=true&w=majority",{useNewUrlParser:true});
+mongoose.connect("mongodb+srv://"+process.env.MONGODB_USER+":"+process.env.MONGODB_USER_PASS+"@cluster0.c9xlloe.mongodb.net/userDB?retryWrites=true&w=majority",{useNewUrlParser:true});
 
 const userSchema = new mongoose.Schema({username:String,password:String});
 
@@ -42,7 +43,7 @@ app.post('/registeruser',(req,res)=>{
 app.post('/usersignin', (req,res)=>{
     const givenusername = req.body.username;
     const givenpassword = req.body.password;
-    User.findOne({username:givenusername,password:givenpassword}).then((founduser)=>{
+    User.findOne({username:givenusername}).then((founduser)=>{
         if(founduser){
             console.log("User authenticated successfully!");
             res.send("User authenticated successfully!");
